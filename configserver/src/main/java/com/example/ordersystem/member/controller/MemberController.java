@@ -29,8 +29,6 @@ public class MemberController {
     @Value("${jwt.secretKeyRt}")
     private String secretKeyRt;
 
-    private String Test;
-
     public MemberController(MemberService memberService, JwtTokenProvider jwtTokenProvider,@Qualifier("rtdb") RedisTemplate<String, Object> redisTemplate) {
         this.memberService = memberService;
         this.jwtTokenProvider = jwtTokenProvider;
