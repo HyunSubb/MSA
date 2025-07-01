@@ -6,3 +6,18 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+
+### IntelliJ IDEA ###
+.idea/          # .idea 폴더 전체를 무시
+*.iml           # .iml 파일 무시
+out/            # 빌드 출력 디렉토리 무시
+# ... 기존의 IntelliJ IDEA 관련 무시 규칙도 다시 확인
+
+### Gradle ###
+.gradle/        # .gradle 폴더 무시
+build/          # build 폴더 무시
+*.jar
+*.war
+*.zip
+*.tar
+*.tar.gz
