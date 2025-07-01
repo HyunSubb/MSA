@@ -21,3 +21,6 @@ build/          # build 폴더 무시
 *.zip
 *.tar
 *.tar.gz
+
+# 백업 파일 (이 부분을 추가)
+*~
