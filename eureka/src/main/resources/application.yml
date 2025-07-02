@@ -1,27 +1,12 @@
-spring :
-  data:
-    redis:
-      host: localhost
-      port: 6379
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ordermsa?useSSL=false&allowPublicKeyRetrieval=true
-    username: root
-    password: yourpassword
-  jpa:
-    database: mysql
-    #    InnoDB??
-    database-platform: org.hibernate.dialect.MySQL8Dialect
-    generate-ddl: true
-    hibernate:
-      ddl-auto: create
-    show_sql: true
-jwt:
-  expiration: 1000
-  #  인코딩된 문자 32자 이상 필요.(특수문자안됨)
-  #  beyondaccesstokensecretkeybeyondaccesstokensecretkeybeyondaccesstokensecretkey
-  secretKey: YmV5b25kYWNjZXNzdG9rZW5zZWNyZXRrZXliZXlvbmRhY2Nlc3N0b2tlbnNlY3JldGtleWJleW9uZGFjY2Vzc3Rva2Vuc2VjcmV0a2V5
+spring:
+    application:
+        name: eureka-server
 
-  expirationRt: 288000
-  #  beyondrefreshtokensecretkeybeyondrefreshtokensecretkeybeyondrefreshtokensecretkey
-  secretKeyRt: YmV5b25kcmVmcmVzaHRva2Vuc2VjcmV0a2V5YmV5b25kcmVmcmVzaHRva2Vuc2VjcmV0a2V5YmV5b25kcmVmcmVzaHRva2Vuc2VjcmV0a2V5
+server:
+  port: 8761
+
+eureka:
+  client:
+    # 나 자신은 유레카 서버에 클라이언트로 등록하지 않겠다라는 설정 (자기 자신은 등록할 필요가 없으니까)
+    register-with-eureka: false
+    fetch-registry: false

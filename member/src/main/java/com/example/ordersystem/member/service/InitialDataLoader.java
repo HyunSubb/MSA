@@ -18,11 +18,11 @@ public class InitialDataLoader implements CommandLineRunner {
     }
     @Override
     public void run(String... args) throws Exception {
-        if(memberRepository.findByEmail("admin@naver.com").isPresent())return;
+        if(memberRepository.findByEmail("gussl23@naver.com").isPresent())return;
         Member member = Member.builder()
                 .name("admin")
-                .email("admin@naver.com")
-                .password(passwordEncoder.encode("12341234"))
+                .email("gussl23@naver.com")
+                .password(passwordEncoder.encode("gks00dlfz@"))
                 .role(Role.ADMIN)
                 .build();
         memberRepository.save(member);
