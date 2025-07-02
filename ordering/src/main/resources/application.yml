@@ -1,8 +1,18 @@
+eureka:
+  client:
+    serviceUrl:
+      # 유레카 서버가 어디에 있는지를 위치 정보를 여기다가 명시해 둔 것이다.
+      defaultZone: http://localhost:8761/eureka/
+
+server:
+  # port를 0으로 세팅을 하면 spring이 임의 port를 할당한다.
+  # port 번호가 임의여도 유레카한테 서비스의 이름으로 물어보고 찾는 것이기 때문에 상관없다.
+  port: 0
+
 spring :
-  data:
-    redis:
-      host: localhost
-      port: 6379
+  application:
+    # Eureka한테 나의 이름을 알려주기 위해 이름 설정
+    name: ordering-service
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/ordermsa?useSSL=false&allowPublicKeyRetrieval=true
@@ -16,12 +26,3 @@ spring :
     hibernate:
       ddl-auto: create
     show_sql: true
-jwt:
-  expiration: 1000
-  #  인코딩된 문자 32자 이상 필요.(특수문자안됨)
-  #  beyondaccesstokensecretkeybeyondaccesstokensecretkeybeyondaccesstokensecretkey
-  secretKey: YmV5b25kYWNjZXNzdG9rZW5zZWNyZXRrZXliZXlvbmRhY2Nlc3N0b2tlbnNlY3JldGtleWJleW9uZGFjY2Vzc3Rva2Vuc2VjcmV0a2V5
-
-  expirationRt: 288000
-  #  beyondrefreshtokensecretkeybeyondrefreshtokensecretkeybeyondrefreshtokensecretkey
-  secretKeyRt: YmV5b25kcmVmcmVzaHRva2Vuc2VjcmV0a2V5YmV5b25kcmVmcmVzaHRva2Vuc2VjcmV0a2V5YmV5b25kcmVmcmVzaHRva2Vuc2VjcmV0a2V5
