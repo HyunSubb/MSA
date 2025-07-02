@@ -1,13 +1,11 @@
 package com.example.ordersystem.product.service;
 
-import com.example.ordersystem.member.domain.Member;
-import com.example.ordersystem.member.repository.MemberRepository;
 import com.example.ordersystem.product.domain.Product;
 import com.example.ordersystem.product.dto.ProductRegisterDto;
+import com.example.ordersystem.product.dto.ProductResDto;
+import com.example.ordersystem.product.dto.ProductUpdateStockDto;
 import com.example.ordersystem.product.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,18 +13,37 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ProductService {
     private final ProductRepository productRepository;
-    private final MemberRepository memberRepository;
 
-    public ProductService(ProductRepository productRepository, MemberRepository memberRepository) {
+    public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
-        this.memberRepository = memberRepository;
     }
 
-    public Product productCreate(ProductRegisterDto dto){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Member member = memberRepository.findById(Long.parseLong(authentication.getName())).orElseThrow(()->new EntityNotFoundException("member is not found"));
+    public Product productCreate(ProductRegisterDto dto, String userId){
+        Product product = productRepository.save(dto.toEntity(Long.parseLong(userId)));
+        return product;
+    }
 
-        Product product = productRepository.save(dto.toEntity(member));
+    public ProductResDto productDetail(Long id) {
+        Product product = productRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("product is not found")
+        );
+
+        ProductResDto productResDto = ProductResDto.builder()
+                .id(product.getId())
+                .name(product.getName())
+                .price(product.getPrice())
+                .stockQuantity(product.getStockQuantity())
+                .build();
+
+        return productResDto;
+    }
+
+    public Product updateStockQuantity(ProductUpdateStockDto productUpdateStockDto) {
+        Product product = productRepository.findById(productUpdateStockDto.getProuductId())
+                .orElseThrow(()-> new EntityNotFoundException("product is not found"));
+
+        product.updateStockQuantity(productUpdateStockDto.getStockQuantity());
+
         return product;
     }
 

@@ -1,7 +1,6 @@
 package com.example.ordersystem.product.domain;
 
 import com.example.ordersystem.common.domain.BaseTimeEntity;
-import com.example.ordersystem.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,17 +18,15 @@ public class Product  extends BaseTimeEntity {
     private Long id;
 
     private String name;
+
     private Integer price;
+
     private Integer stockQuantity;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+
+    @Column(nullable = false)
+    private Long memberId;
 
     public void updateStockQuantity(int stockQuantity){
         this.stockQuantity = this.stockQuantity - stockQuantity;
     }
-
-
-
-
 }
