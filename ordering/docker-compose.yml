@@ -1,0 +1,17 @@
+version: '2'
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181" # 내부포트:외부포트 / 우리가 접근하는 포트는 왼쪽에 있는 포트이다.
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - "9092:9092" # 내부포트:외부포트 / 우리가 접근하는 포트는 왼쪽에 있는 포트이다.
+    environment: # 환경 변수
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9093,OUTSIDE://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
+      # 이렇게 이름(zookeeper:2181)으로 호출이 가능한 건 docker compose로 한 네트워크로 묶여 있는 상태이기 떄문이다.
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
