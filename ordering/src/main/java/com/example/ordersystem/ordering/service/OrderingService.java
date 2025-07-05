@@ -7,6 +7,7 @@ import com.example.ordersystem.ordering.dto.ProductUpdateStockDto;
 import com.example.ordersystem.ordering.repository.OrderingRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.*;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -17,10 +18,14 @@ import org.springframework.web.client.RestTemplate;
 public class OrderingService {
     private final OrderingRepository orderingRepository;
     private final RestTemplate restTemplate;
+    private final ProductFeign productFeign;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    public OrderingService(OrderingRepository orderingRepository, RestTemplate restTemplate) {
+    public OrderingService(OrderingRepository orderingRepository, RestTemplate restTemplate, ProductFeign productFeign, KafkaTemplate<String, Object> kafkaTemplate) {
         this.orderingRepository = orderingRepository;
         this.restTemplate = restTemplate;
+        this.productFeign = productFeign;
+        this.kafkaTemplate = kafkaTemplate;
     }
 
     public Ordering orderCreate(OrderCreateDto orderDto , String userId){
@@ -52,6 +57,37 @@ public class OrderingService {
                     , httpHeaders
             );
             restTemplate.exchange(productPutUrl, HttpMethod.PUT, updateEntity, Void.class);
+        }
+
+        Ordering ordering = Ordering.builder()
+                .memberId(Long.parseLong(userId))
+                .productId(orderDto.getProductId())
+                .quantity(orderDto.getProductCount())
+                .build();
+
+        orderingRepository.save(ordering);
+        return  ordering;
+    }
+
+    public Ordering orderFeignKafkaCreate(OrderCreateDto orderDto , String userId){
+
+        ProductDto productDto = productFeign.getProductById(orderDto.getProductId(), userId);
+
+        int quantity = orderDto.getProductCount();
+        if(productDto.getStockQuantity() < quantity){
+            throw new IllegalArgumentException("재고 부족");
+        } else {
+//            이 부분은 동기적인 방식으로 기다릴 필요가 없지 않을까?? 당연히 동기적인 방식이 안전하긴 하다.
+//            이 부분은 kafka를 이용해서 비동기 처리를 한 번 해보자.
+//            productFeign.updateProductStock(
+//                    ProductUpdateStockDto.builder()
+//                            .prouductId(orderDto.getProductId())
+//                            .stockQuantity(orderDto.getProductCount()).build()
+//            );
+            kafkaTemplate.send("update-stock-topic",
+                    ProductUpdateStockDto.builder()
+                            .prouductId(orderDto.getProductId())
+                            .stockQuantity(orderDto.getProductCount()).build());
         }
 
         Ordering ordering = Ordering.builder()

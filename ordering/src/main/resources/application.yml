@@ -26,3 +26,5 @@ spring :
     hibernate:
       ddl-auto: create
     show_sql: true
+  kafka:
+    kafka-server: localhost:9092 # 9092는 kafka서버의 포트번호이다.

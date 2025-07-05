@@ -6,6 +6,7 @@ import com.example.ordersystem.product.dto.ProductResDto;
 import com.example.ordersystem.product.dto.ProductUpdateStockDto;
 import com.example.ordersystem.product.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +46,11 @@ public class ProductService {
         product.updateStockQuantity(productUpdateStockDto.getStockQuantity());
 
         return product;
+    }
+
+    @KafkaListener(topics = "update-stock-topic", containerFactory = "kafkaListener")
+    public void stockConsumer(String message) {
+        System.out.println(message);
     }
 
 }

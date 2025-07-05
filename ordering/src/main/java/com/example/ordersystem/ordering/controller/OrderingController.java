@@ -19,7 +19,7 @@ public class OrderingController {
     @PostMapping("/create")
     public ResponseEntity<?> orderCreate(@RequestBody OrderCreateDto dtos,
                                          @RequestHeader("X-User-Id") String userId) {
-        Ordering ordering = orderingService.orderCreate(dtos, userId);
+        Ordering ordering = orderingService.orderFeignKafkaCreate(dtos, userId);
         return new ResponseEntity<>(ordering.getId(), HttpStatus.CREATED);
     }
 

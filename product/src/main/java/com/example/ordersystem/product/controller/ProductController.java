@@ -29,7 +29,8 @@ public class ProductController {
 
 //    OrderingService에서 호출할 Product 조회 api
     @GetMapping("/{id}")
-    public ResponseEntity<?> productDetail(@PathVariable Long id) {
+    public ResponseEntity<?> productDetail(@PathVariable Long id,
+                              @RequestHeader("X-User-Id") String userId) {
         ProductResDto productResDto = productService.productDetail(id);
 //        앞쪽은 객체, 뒷쪽은 상태코드. 받는 쪽은 .getBody()를 하면 dto를 받을 수 있다.
         return new ResponseEntity<>(productResDto, HttpStatus.OK);
