@@ -16,7 +16,7 @@ import java.util.Map;
 @Configuration
 public class KafkaProducerConfig {
 
-//    yml에 입력했던 값을 주입받고 있다.
+//    yml에 입력했던 값을 주입받고 있다..
     @Value("${spring.kafka.kafka-server}")
     private String kafkaServer;
 
