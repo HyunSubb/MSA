@@ -48,6 +48,8 @@ public class ProductService {
         return product;
     }
 
+//    카프카에서 consumer 사용할 떄는 빈주입 방식이 아닌 어노테이션으로 처리한다.
+//    받아올 topic의 이름과 config에서 생성한 메서드의 이름을 기입
     @KafkaListener(topics = "update-stock-topic", containerFactory = "kafkaListener")
     public void stockConsumer(String message) {
         System.out.println(message);

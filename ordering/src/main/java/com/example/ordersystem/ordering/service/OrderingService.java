@@ -84,6 +84,7 @@ public class OrderingService {
 //                            .prouductId(orderDto.getProductId())
 //                            .stockQuantity(orderDto.getProductCount()).build()
 //            );
+//            카프카를 이용해서 해당 토픽으로 메시지를 발행한다.
             kafkaTemplate.send("update-stock-topic",
                     ProductUpdateStockDto.builder()
                             .prouductId(orderDto.getProductId())
