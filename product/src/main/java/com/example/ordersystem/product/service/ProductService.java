@@ -5,6 +5,8 @@ import com.example.ordersystem.product.dto.ProductRegisterDto;
 import com.example.ordersystem.product.dto.ProductResDto;
 import com.example.ordersystem.product.dto.ProductUpdateStockDto;
 import com.example.ordersystem.product.repository.ProductRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
@@ -53,6 +55,16 @@ public class ProductService {
     @KafkaListener(topics = "update-stock-topic", containerFactory = "kafkaListener")
     public void stockConsumer(String message) {
         System.out.println(message);
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProductUpdateStockDto dto = null;
+        try {
+            dto = objectMapper.readValue(message, ProductUpdateStockDto.class);
+            this.updateStockQuantity(dto);
+        } catch (JsonProcessingException e) {
+//            오류가 났다면 주문 실패가 됐으니까 다시 주문하라고 ordering 쪽으로 api 요청을 해야한다.
+//            -> 이런것을 보상 트랜잭션이라고 한다. 우리 작업에서는 보상 트랜잭션 만들지는 않았음. 참고하라고 적어놓음.
+            throw new RuntimeException(e);
+        }
     }
 
 }
